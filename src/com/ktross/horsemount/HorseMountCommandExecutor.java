@@ -1,13 +1,11 @@
 package com.ktross.horsemount;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Horse;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.HorseInventory;
@@ -60,66 +58,10 @@ public class HorseMountCommandExecutor implements CommandExecutor {
 				plugin.msgPlayer(sender, "You do not have permission to use this command.");
 				return false;
 			}
-			
-            String HorseVariant;
-            String HorseStyle;
-            String HorseColor;
-            String HorseArmor;
-            World world = player.getWorld();
-            Location TargetLocation = player.getLocation();
-            
-            if (plugin.getConfig().get("players."+player.getName()) != null) {
-            	HorseVariant = (String) plugin.getConfig().get("players."+player.getName()+".variant");
-				HorseStyle = (String) plugin.getConfig().get("players."+player.getName()+".style");
-				HorseColor = (String) plugin.getConfig().get("players."+player.getName()+".color");
-				HorseArmor = (String) plugin.getConfig().get("players."+player.getName()+".armor");
-            } else {
-            	HorseVariant = (String) plugin.getConfig().get("players.default.variant"); 
-				HorseStyle = (String) plugin.getConfig().get("players.default.style");
-				HorseColor = (String) plugin.getConfig().get("players.default.color");
-				HorseArmor = (String) plugin.getConfig().get("players.default.armor");
-            }
-			
-			if (plugin.mountVariants.get(HorseVariant) == null || plugin.mountStyles.get(HorseStyle) == null || plugin.mountColors.get(HorseColor) == null) {
-				if (!HorseStyle.equalsIgnoreCase("none") && !HorseColor.equalsIgnoreCase("none")) {
-					plugin.msgPlayer(sender, "Mount does not exist. Please check your config values.");
-					return false;
-				}
-			}
-			if (HorseStyle.equalsIgnoreCase("none") || HorseColor.equalsIgnoreCase("none")) {
-				if (!player.hasPermission("horsemount.variant."+HorseVariant)) {
-					plugin.msgPlayer(sender, "You do not have permission to use this mount.");
-					return false;
-				}
-			} else {
-				if (!player.hasPermission("horsemount.variant."+HorseVariant) || !player.hasPermission("horsemount.style."+HorseStyle) || !player.hasPermission("horsemount.color."+HorseColor)) {
-					plugin.msgPlayer(sender, "You do not have permission to use this mount.");
-					return false;
-				}
-			}
-			
-			Horse horse = (Horse) world.spawnEntity(TargetLocation, EntityType.HORSE);
-			HorseInventory inv = horse.getInventory();
-			
-			horse.setVariant(plugin.mountVariants.get(HorseVariant));
-			
-			if (HorseVariant.equalsIgnoreCase("horse")) {
-				horse.setStyle(plugin.mountStyles.get(HorseStyle));
-			}
-			if (HorseVariant.equalsIgnoreCase("horse")) {
-				horse.setColor(plugin.mountColors.get(HorseColor));
-			}
-			
-			inv.setSaddle(new ItemStack(Material.SADDLE, 1));
-			
-			if (HorseVariant.equalsIgnoreCase("horse") && !HorseArmor.equalsIgnoreCase("none") && player.hasPermission("horsemount.armor."+HorseArmor)) {
-				inv.setArmor(new ItemStack(plugin.mountArmor.get(HorseArmor), 1));
-			}
-			
-			horse.setOwner(player);
-            horse.setPassenger(player);
-            return true;
-		}
+
+			return plugin.mount(player);
+		} 
+
 		
 		if (cmd.getName().equalsIgnoreCase("dismount")) {
 			if (!player.hasPermission("horsemount.dismount")) {
@@ -259,4 +201,5 @@ public class HorseMountCommandExecutor implements CommandExecutor {
 		//No command matched
 		return false;
 	}
+
 }

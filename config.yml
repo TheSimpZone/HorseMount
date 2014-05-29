@@ -1,5 +1,6 @@
 disable-spawning: true
 disable-item-drops: true
+horse-cost: 10
 players:
   default:
     variant: horse

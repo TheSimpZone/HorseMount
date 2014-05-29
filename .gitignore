@@ -1,5 +1,6 @@
 #binary
 bin/
+target/
 
 #eclipse
 .classpath
